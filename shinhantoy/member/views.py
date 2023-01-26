@@ -2,6 +2,7 @@ from rest_framework import mixins, generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password, make_password
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import MemberSerializer
 from .models import Member
@@ -22,8 +23,9 @@ class MemberDetailView(
     APIView,
 ):
 
+    permission_classes = [IsAuthenticated]
+
     def put(self, request, *args, **kwargs):
-        username = request.data.get('username')
         password = request.data.get('password')
         new_password = request.data.get('new_password')
         new_password2 = request.data.get('new_password2')
@@ -33,18 +35,8 @@ class MemberDetailView(
                 "detail": "different new password"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if not Member.objects.filter(username=username).exists():
-            return Response({
-                "detail": "no such account"
-            }, status=status.HTTP_404_NOT_FOUND)
+        member = request.user
 
-        if password == new_password:
-            return Response({
-                "detail": "same password"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        
-        member = Member.objects.get(username=username)
         if not check_password(password, member.password):
            return Response({
             "detail": "wrong password"
