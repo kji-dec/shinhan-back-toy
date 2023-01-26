@@ -1,7 +1,8 @@
 from rest_framework import generics, mixins
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .serializers import OrderSerializer
-from .models import Order
+from .serializers import OrderSerializer, CommentSerializer, CommentCreateSerializer
+from .models import Order, Comment
 
 # Create your views here.
 
@@ -29,3 +30,30 @@ class OrderDetailView(
     
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, args, kwargs)
+
+
+class CommentListView(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    generics.GenericAPIView,
+):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CommentCreateSerializer
+        return CommentSerializer
+
+    def get_queryset(self):
+        order_id = self.kwargs.get('order_id')
+        if order_id:
+            return Comment.objects.filter(order_id=order_id)\
+                    .select_related('order')\
+                    .order_by('-id')
+        return Comment.objects.none()
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, args, kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, args, kwargs)
