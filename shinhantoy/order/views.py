@@ -59,7 +59,7 @@ class CommentListView(
         order_id = self.kwargs.get('order_id')
         if order_id:
             return Comment.objects.filter(order_id=order_id)\
-                    .select_related('order')\
+                    .select_related('member', 'order')\
                     .order_by('-id')
         return Comment.objects.none()
     
