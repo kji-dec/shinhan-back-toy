@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'order.apps.OrderConfig',
+    'member.apps.MemberConfig',
 ]
 
 MIDDLEWARE = [
@@ -149,6 +150,17 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
+
+import datetime
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=2),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("JWT", ),
+}
+AUTH_USER_MODEL = "member.Member"
+AUTHENTICATION_BACKENDS = [
+    "member.auth.MemberAuth",
+]
 
 if DEBUG: # cors allow all origins only in debug env
     CORS_ALLOW_ALL_ORIGINS = True
