@@ -25,11 +25,34 @@
             }
           })
       });
+    
+      function search() {
+        $.get("http://127.0.0.1:8000/api/order?ord_no=" + $("#search").val())
+          .then((result) => {
+            $("#orders").html("");
+            for (let i=0; i<result.results.length; i++){
+              const order = result.results[i]
+              $("#orders").append(
+                $(`<li class="list-group-item">
+                  주문 번호: ${order.ord_no}<br>
+                  주문 일자: ${order.ord_ymd}
+                </li>`)
+              )
+            }
+          })
+      }
   </script>
 </head>
 
 <body>
   <div class="container">
+    <div class="form-group mb-3">
+      <label for="search">검색</label>
+      <input type="text" class="form-control" id="search" name="search">
+    </div>
+    <div class="text-right">
+      <button type="button" class="btn btn-primary" onclick="search()">검색</button>
+    </div>
     <ul class="list-group list-group-flush" id="orders">
     </ul>
   </div>
