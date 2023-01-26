@@ -1,7 +1,12 @@
-from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import generics, mixins, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
-from .serializers import OrderSerializer, CommentSerializer, CommentCreateSerializer
+from .serializers import (
+    OrderSerializer, 
+    CommentSerializer, 
+    CommentCreateSerializer,
+)
 from .models import Order, Comment
 
 # Create your views here.
@@ -57,3 +62,17 @@ class CommentListView(
     
     def post(self, request, *args, **kwargs):
         return self.create(request, args, kwargs)
+
+class CommentDeleteView(
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.all().order_by('id')
+    
+    def delete(self, request, *args, **kwargs):
+        if not Comment.objects.filter(member__pk=request.user.id).exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return self.destroy(request, args, kwargs)
