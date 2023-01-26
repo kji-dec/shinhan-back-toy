@@ -16,17 +16,12 @@
       if (order_id > 0) {
         $.get("http://127.0.0.1:8000/api/order/" + order_id)
           .then((result) => {
-            $("#order_id").text(result.id);
-            $("#ord_ymd").text(result.ord_ymd);
-            $("#acct_mang_dbrn_code").text(result.acct_mang_dbrn_code);
-            $("#ord_no").text(result.ord_no);
-            $("#acct_no").text(result.acct_no);
-            $("#callv_type_code").text(result.callv_type_code);
-            $("#sell_buy_tp_code").text(result.sell_buy_tp_code);
-            $("#stbd_code").text(result.stbd_code);
-            $("#ord_qty").text(result.ord_qty);
-            $("#ord_uv").text(result.ord_uv);
-            $("#mrgn_base_uv").text(result.mrgn_base_uv);
+            $("#info").html("");
+            for (let key in result) {
+              $("#info").append(
+                $(`<li>${key}: ${result[key]}</li>`)
+              );
+            }
           });
         $.get("http://127.0.0.1:8000/api/order/" + order_id + "/comment")
           .then((result) => {
@@ -36,13 +31,15 @@
               $("#comments").append(
                 $(`<li class="list-group-item" id="${comment.id}">
                   ${comment.member_username} (${comment.tstamp})<br><br>
-                  ${comment.content}
-                </li>
+                  ${comment.content}<br><br>
                 <div class="form-group mb-3">
                 <label for="token2">토큰</label>
                 <input type="text" class="form-control" id="token2" name="token2">
                 </div>
-                <button type="button" onclick="deleteComment(${comment.id})">삭제</button>
+                <div class="text-right">
+                <button type="button" class="btn btn-primary" onclick="deleteComment(${comment.id})">삭제</button>
+                </div>
+                </li>
                 `)
               )
             }
@@ -92,22 +89,14 @@
 <body>
   <div class="container">
     <h1 id="productName" class="text-center"></h1>
-    <ul>
-      <li>order_id: <span id="order_id"></span></li>
-      <li>ord_ymd: <span id="ord_ymd"></span></li>
-      <li>acct_mang_dbrn_code: <span id="acct_mang_dbrn_code"></span></li>
-      <li>ord_no: <span id="ord_no"></span></li>
-      <li>acct_no: <span id="acct_no"></span></li>
-      <li>callv_type_code: <span id="callv_type_code"></span></li>
-      <li>sell_buy_tp_code: <span id="sell_buy_tp_code"></span></li>
-      <li>stbd_code: <span id="stbd_code"></span></li>
-      <li>ord_qty: <span id="ord_qty"></span></li>
-      <li>ord_uv: <span id="ord_uv"></span></li>
-      <li>mrgn_base_uv: <span id="mrgn_base_uv"></span></li>
+    <ul id="info">
     </ul>
     <hr>
+    <h3>댓글 작성</h3>
     <label for="content">댓글</label>
-    <textarea id="content" rows="3" cols="50" name="content"></textarea>
+    <div class="form-floating">
+      <textarea class="form-control" id="content"></textarea>
+    </div>
     <div class="form-group mb-3">
       <label for="token">토큰</label>
       <input type="text" class="form-control" id="token" name="token">
