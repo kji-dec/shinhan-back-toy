@@ -13,24 +13,57 @@
     $(document).ready(function () {
       const search = new URLSearchParams(location.search);
       const order_id = search.get('order_id');
-      if (order_id > 0){
+      if (order_id > 0) {
         $.get("http://127.0.0.1:8000/api/order/" + order_id)
-        .then((result) => {
-          $("#order_id").text(result.id);
-          $("#ord_ymd").text(result.ord_ymd);
-          $("#acct_mang_dbrn_code").text(result.acct_mang_dbrn_code);
-          $("#ord_no").text(result.ord_no);
-          $("#acct_no").text(result.acct_no);
-          $("#callv_type_code").text(result.callv_type_code);
-          $("#sell_buy_tp_code").text(result.sell_buy_tp_code);
-          $("#stbd_code").text(result.stbd_code);
-          $("#ord_qty").text(result.ord_qty);
-          $("#ord_uv").text(result.ord_uv);
-          $("#mrgn_base_uv").text(result.mrgn_base_uv);
-        });
+          .then((result) => {
+            $("#order_id").text(result.id);
+            $("#ord_ymd").text(result.ord_ymd);
+            $("#acct_mang_dbrn_code").text(result.acct_mang_dbrn_code);
+            $("#ord_no").text(result.ord_no);
+            $("#acct_no").text(result.acct_no);
+            $("#callv_type_code").text(result.callv_type_code);
+            $("#sell_buy_tp_code").text(result.sell_buy_tp_code);
+            $("#stbd_code").text(result.stbd_code);
+            $("#ord_qty").text(result.ord_qty);
+            $("#ord_uv").text(result.ord_uv);
+            $("#mrgn_base_uv").text(result.mrgn_base_uv);
+          });
+        $.get("http://127.0.0.1:8000/api/order/" + order_id + "/comment")
+          .then((result) => {
+            $("#comments").html("");
+            for (let i = 0; i < result.results.length; i++) {
+              const comment = result.results[i]
+              $("#comments").append(
+                $(`<li class="list-group-item">
+                  ${comment.member_username} (${comment.tstamp})<br><br>
+                  ${comment.content}
+                </li>`)
+              )
+            }
+          })
       }
-      
+
     });
+
+    function comment() {
+      const search = new URLSearchParams(location.search);
+      const order_id = search.get('order_id');
+      $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:8000/api/order/' + order_id + '/comment',
+        data: {
+          content: $("#content").val(),
+          order: order_id,
+        },
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("Authorization", "JWT " + $("#token").val());
+        },
+        success: (result) => {
+          alert("등록되었습니다.");
+          location.reload(true);
+        }
+      })
+    }
   </script>
 </head>
 
@@ -50,7 +83,20 @@
       <li>ord_uv: <span id="ord_uv"></span></li>
       <li>mrgn_base_uv: <span id="mrgn_base_uv"></span></li>
     </ul>
+    <hr>
+    <label for="content">댓글</label>
+    <textarea id="content" rows="3" cols="50" name="content"></textarea>
+    <div class="form-group mb-3">
+      <label for="token">토큰</label>
+      <input type="text" class="form-control" id="token" name="token">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="comment()">등록</button>
+    <hr>
+    <ul class="list-group list-group-flush" id="comments">
+    </ul>
   </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
