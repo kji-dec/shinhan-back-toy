@@ -19,7 +19,13 @@ class OrderListView(
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return Order.objects.all().order_by('-id')
+        orders = Order.objects.all()
+        ord_no = self.request.query_params.get('ord_no')
+
+        if ord_no:
+            orders = orders.filter(ord_no__contains=ord_no)
+        
+        return orders.order_by('id')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
