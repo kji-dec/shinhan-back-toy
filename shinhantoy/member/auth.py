@@ -16,6 +16,7 @@ class MemberAuth:
             return None
         
         if check_password(password, member.password):
-            return member
+            if member.status == '일반':
+                return member
         
         return None
