@@ -24,6 +24,9 @@
           .then((result) => {
             $("#info").html("");
             for (let key in result) {
+              if (key === "comment_count") {
+                continue;
+              }
               $("#info").append(
                 $(`<li class="list-group-item">${key}: ${result[key]}</li>`)
               );
