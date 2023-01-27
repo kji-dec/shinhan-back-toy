@@ -32,10 +32,6 @@
                 $(`<li class="list-group-item" id="${comment.id}">
                   ${comment.member_username} (${comment.tstamp})<br><br>
                   ${comment.content}<br><br>
-                <div class="form-group mb-3">
-                <label for="token2">토큰</label>
-                <input type="text" class="form-control" id="token_${comment.id}" name="token">
-                </div>
                 <div class="text-right">
                 <button type="button" class="btn btn-primary" onclick="deleteComment(${comment.id})">삭제</button>
                 </div>
@@ -55,7 +51,7 @@
         type: 'DELETE',
         url: 'http://127.0.0.1:8000/api/order/' + order_id + '/comment/' + comment_id,
         beforeSend: function (xhr) {
-          xhr.setRequestHeader("Authorization", "JWT " + $(`#token_${comment_id}`).val());
+          xhr.setRequestHeader("Authorization", "JWT " + $("#token").val());
         },
         success: (result) => {
           alert("삭제되었습니다.");
@@ -92,14 +88,14 @@
     <ul id="info">
     </ul>
     <hr>
+    <div class="form-group mb-3">
+      <label for="token">토큰</label>
+      <input type="text" class="form-control" id="token" name="token">
+    </div>
     <h3>댓글 작성</h3>
     <label for="content">댓글</label>
     <div class="form-floating">
       <textarea class="form-control" id="content"></textarea>
-    </div>
-    <div class="form-group mb-3">
-      <label for="token">토큰</label>
-      <input type="text" class="form-control" id="token" name="token">
     </div>
     <button type="button" class="btn btn-primary" onclick="comment()">등록</button>
     <hr>
