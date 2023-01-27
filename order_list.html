@@ -88,18 +88,20 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="form-group mb-3">
-      <label for="search">검색</label>
-      <input type="text" class="form-control" id="search" name="search">
+  <br><br>
+    <div class="text-center">
+      <h1>주문 리스트</h1>
     </div>
-    <div class="text-right">
-      <button type="button" class="btn btn-primary" onclick="search()">검색</button>
+    <br><br>
+  <div class="container">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" id="search">
+      <button class="btn btn-outline-secondary" type="button" onclick="search()">검색</button>
     </div>
     <ul class="list-group list-group-flush" id="orders">
     </ul>
     <nav aria-label="Page navigation example">
-      <ul class="pagination" id="pagination"></ul>
+      <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
