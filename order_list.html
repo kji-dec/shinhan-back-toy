@@ -31,22 +31,38 @@
             )
           }
 
-          let max_page = Math.ceil(result.count / 10)
-          let start_page = page - 2
+          page = Number(page)
+          let max_page = Math.ceil(result.count / 10);
+          let start_page = page - 2;
+          let end_page = page + 2;
 
-          if(start_page < 1){
+          if (start_page < 1) {
+            start_page = 1;
+            end_page = 5;
+          }
+          if (end_page > max_page) {
+            start_page = max_page - 4
+            end_page = max_page
+          }
+          if (max_page < 5) {
             start_page = 1
+            end_page = max_page
           }
 
-          let end_page = start_page + 5
-          console.log(start_page)
+          for (let i = start_page; i < end_page + 1; i++) {
+            if (i == page) {
+              $("#pagination").append(
+                $(`<li class="page-item active"><a class="page-link" onclick="go_page(${i})">${i}</a></li>`)
+              );
+            }
+            else {
+              $("#pagination").append(
+                $(`<li class="page-item"><a class="page-link" onclick="go_page(${i})">${i}</a></li>`)
+              );
+            }
 
-          for (let i = start_page; i < end_page; i++) {
-            $("#pagination").append(
-              $(`<li class="page-item"><a class="page-link" onclick="go_page(${i})">${i}</a></li>`)
-            )
-          }
-        })
+          };
+        });
     });
 
     function search() {
