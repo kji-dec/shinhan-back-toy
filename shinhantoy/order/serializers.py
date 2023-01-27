@@ -4,6 +4,11 @@ from .models import Order, Comment, Like
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    comment_count = serializers.SerializerMethodField()
+
+    def get_comment_count(self, obj):
+        return obj.comment_set.all().count()
+
     class Meta:
         model = Order
         fields = '__all__'
