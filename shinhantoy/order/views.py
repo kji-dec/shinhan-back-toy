@@ -6,8 +6,9 @@ from .serializers import (
     OrderSerializer, 
     CommentSerializer, 
     CommentCreateSerializer,
+    LikeSerializer
 )
-from .models import Order, Comment
+from .models import Order, Comment, Like
 
 # Create your views here.
 
@@ -79,3 +80,19 @@ class CommentDeleteView(
     
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, args, kwargs)
+
+class LikeCreateView(
+    mixins.DestroyModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView,
+):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LikeSerializer
+    
+    def post(self, request, *args, **kwargs):
+        like = Like.objects.filter(member=request.user.id, comment_id=kwargs.get('comment_id'))
+        print(request.user.id, kwargs.get('comment_id'))
+        if like.exists():
+            like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return self.create(request, args, kwargs)
