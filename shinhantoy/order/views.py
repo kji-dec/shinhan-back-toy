@@ -56,12 +56,9 @@ class CommentListView(
         return CommentSerializer
 
     def get_queryset(self):
-        order_id = self.kwargs.get('order_id')
-        if order_id:
-            return Comment.objects.filter(order_id=order_id)\
+        return Comment.objects.filter(order_id=self.kwargs.get('order_id'))\
                     .select_related('member', 'order')\
                     .order_by('-id')
-        return Comment.objects.none()
     
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
@@ -76,9 +73,9 @@ class CommentDeleteView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if not Comment.objects.filter(member__pk=self.request.user.id, pk=self.kwargs.get('pk')).exists():
+            return Comment.objects.none()
         return Comment.objects.all().order_by('id')
     
     def delete(self, request, *args, **kwargs):
-        if not Comment.objects.filter(member__pk=request.user.id, pk=kwargs.get('pk')).exists():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.destroy(request, args, kwargs)
