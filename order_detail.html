@@ -34,7 +34,7 @@
                   ${comment.content}<br><br>
                 <div class="form-group mb-3">
                 <label for="token2">토큰</label>
-                <input type="text" class="form-control" id="token2" name="token2">
+                <input type="text" class="form-control" id="token_${comment.id}" name="token">
                 </div>
                 <div class="text-right">
                 <button type="button" class="btn btn-primary" onclick="deleteComment(${comment.id})">삭제</button>
@@ -55,7 +55,7 @@
         type: 'DELETE',
         url: 'http://127.0.0.1:8000/api/order/' + order_id + '/comment/' + comment_id,
         beforeSend: function (xhr) {
-          xhr.setRequestHeader("Authorization", "JWT " + $("#token2").val());
+          xhr.setRequestHeader("Authorization", "JWT " + $(`#token_${comment_id}`).val());
         },
         success: (result) => {
           alert("삭제되었습니다.");
