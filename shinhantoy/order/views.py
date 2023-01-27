@@ -79,6 +79,6 @@ class CommentDeleteView(
         return Comment.objects.all().order_by('id')
     
     def delete(self, request, *args, **kwargs):
-        if not Comment.objects.filter(member__pk=request.user.id).exists():
+        if not Comment.objects.filter(member__pk=request.user.id, pk=kwargs.get('pk')).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.destroy(request, args, kwargs)
