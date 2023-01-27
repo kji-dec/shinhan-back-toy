@@ -31,7 +31,9 @@
               $("#comments").append(
                 $(`<li class="list-group-item" id="${comment.id}">
                   ${comment.member_username} (${comment.tstamp})<br><br>
-                  ${comment.content}<br><br>
+                  ${comment.content}<br>
+                  <button type="button" class="btn btn-primary" onclick="like(${comment.id})">좋아요 ${comment.like_count}</button>
+                  <br><br>
                 <div class="text-right">
                 <button type="button" class="btn btn-primary" onclick="deleteComment(${comment.id})">삭제</button>
                 </div>
@@ -69,6 +71,25 @@
         data: {
           content: $("#content").val(),
           order: order_id,
+        },
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", "JWT " + $("#token").val());
+        },
+        success: (result) => {
+          alert("등록되었습니다.");
+          location.reload(true);
+        }
+      })
+    }
+
+    function like(comment_id) {
+      const search = new URLSearchParams(location.search);
+      const order_id = search.get('order_id');
+      $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:8000/api/order/' + order_id + '/comment/' + comment_id + '/like',
+        data: {
+          comment: comment_id,
         },
         beforeSend: function (xhr) {
           xhr.setRequestHeader("Authorization", "JWT " + $("#token").val());
