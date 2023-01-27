@@ -39,8 +39,8 @@
               const comment = result.results[i]
               $("#comments").append(
                 $(`<li class="list-group-item" id="${comment.id}">
-                  ${comment.member_username} (${comment.tstamp})<br><br>
-                  ${comment.content}<br><br>
+                  ${comment.member_username} (${comment.tstamp})<br>
+                  ${comment.content}<br>
                   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                   <button type="button" class="btn btn-info" onclick="like(${comment.id})">좋아요 ${comment.like_count}</button>
                   <button type="button" class="btn btn-danger" onclick="deleteComment(${comment.id})">삭제</button>
